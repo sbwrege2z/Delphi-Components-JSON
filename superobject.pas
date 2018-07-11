@@ -272,6 +272,10 @@ type
     procedure PutC(const index: integer; Value: Currency);
     function GetS(const index: integer): SOString;
     procedure PutS(const index: integer; const Value: SOString);
+    function GetDT(const index: integer): TDateTime;
+    procedure PutDT(const index: integer; const Value: TDateTime);
+    function GetTM(const index: integer): TDateTime;
+    procedure PutTM(const index: integer; const Value: TDateTime);
 {$IFDEF SUPER_METHOD}
     function GetM(const index: integer): TSuperMethod;
     procedure PutM(const index: integer; Value: TSuperMethod);
@@ -291,6 +295,7 @@ type
     procedure Insert(index: Integer; const value: ISuperObject);
     procedure Clear(all: boolean = false);
     procedure Pack(all: boolean);
+    function Find(key, value: String): ISuperObject;
     property Length: Integer read FLength;
 
     property N[const index: integer]: ISuperObject read GetN write PutN;
@@ -300,6 +305,8 @@ type
     property D[const index: integer]: Double read GetD write PutD;
     property C[const index: integer]: Currency read GetC write PutC;
     property S[const index: integer]: SOString read GetS write PutS;
+    property DT[const index: integer]: TDateTime read GetDT write PutDT;
+    property TM[const index: integer]: TDateTime read GetTM write PutTM;
 {$IFDEF SUPER_METHOD}
     property M[const index: integer]: TSuperMethod read GetM write PutM;
 {$ENDIF}
@@ -531,6 +538,10 @@ type
     procedure PutD(const path: SOString; Value: Double);
     function GetS(const path: SOString): SOString;
     procedure PutS(const path: SOString; const Value: SOString);
+    function GetDT(const path: SOString): TDateTime;
+    procedure PutDT(const path: SOString; Value: TDateTime);
+    function GetTM(const path: SOString): TDateTime;
+    procedure PutTM(const path: SOString; Value: TDateTime);     
 {$IFDEF SUPER_METHOD}
     function GetM(const path: SOString): TSuperMethod;
     procedure PutM(const path: SOString; Value: TSuperMethod);
@@ -571,6 +582,8 @@ type
     property D[const path: SOString]: Double read GetD write PutD;
     property C[const path: SOString]: Currency read GetC write PutC;
     property S[const path: SOString]: SOString read GetS write PutS;
+    property DT[const path: SOString]: TDateTime read GetDT write PutDT; 
+    property TM[const path: SOString]: TDateTime read GetTM write PutTM;     
 {$IFDEF SUPER_METHOD}
     property M[const path: SOString]: TSuperMethod read GetM write PutM;
 {$ENDIF}
@@ -651,6 +664,10 @@ type
     function GetC(const path: SOString): Currency;
     function GetS(const path: SOString): SOString;
     procedure PutS(const path: SOString; const Value: SOString);
+    function GetDT(const path: SOString): TDateTime; 
+    procedure PutDT(const path: SOString; Value: TDateTime); 
+    function GetTM(const path: SOString): TDateTime; 
+    procedure PutTM(const path: SOString; Value: TDateTime);     
 {$IFDEF SUPER_METHOD}
     function GetM(const path: SOString): TSuperMethod;
     procedure PutM(const path: SOString; Value: TSuperMethod);
@@ -721,6 +738,8 @@ type
     property D[const path: SOString]: Double read GetD write PutD;
     property C[const path: SOString]: Currency read GetC write PutC;
     property S[const path: SOString]: SOString read GetS write PutS;
+    property DT[const path: SOString]: TDateTime read GetDT write PutDT; 
+    property TM[const path: SOString]: TDateTime read GetTM write PutTM;     
 {$IFDEF SUPER_METHOD}
     property M[const path: SOString]: TSuperMethod read GetM write PutM;
 {$ENDIF}
@@ -820,6 +839,9 @@ function TryObjectToDate(const obj: ISuperObject; var dt: TDateTime): Boolean;
 function UUIDToString(const g: TGUID): SOString;
 function StringToUUID(const str: SOString; var g: TGUID): Boolean;
 
+function XmlToDelphiDate(const S: String): TDateTime;
+function XmlToDelphiDateTime(const S: String): TDateTime;
+
 {$IFDEF HAVE_RTTI}
 
 type
@@ -837,7 +859,7 @@ function SOInvoke(const obj: TValue; const method: string; const params: string;
 
 implementation
 uses
-  sysutils, Windows, superdate
+  sysutils, Windows, superdate, XSBuiltIns,
 {$IFDEF FPC}
   ,sockets
 {$ELSE}
@@ -3268,6 +3290,80 @@ begin
   ParseString(PSOChar(path), true, False, self, [foCreatePath, foPutValue], TSuperObject.Create(Value));
 end;
 
+function XmlToDelphiDate(const S: String): TDateTime;
+var
+  value: TXSDate;
+begin
+  try
+    value := TXSDate.Create;
+    value.XSToNative(S);
+    Result := value.AsDate;
+  finally
+    value.Free;
+  end;
+end;
+
+function TSuperObject.GetDT(const path: SOString): TDateTime;
+var
+  obj: ISuperObject;
+begin
+  obj := GetO(path);
+  if obj <> nil then begin
+    Result := XmlToDelphiDate(obj.AsString);
+  end else
+    Result := 0;
+end;
+
+procedure TSuperObject.PutDT(const path: SOString; Value: TDateTime);
+var
+  val: TXSDate;
+begin
+  try
+    val := TXSDate.Create;
+    val.AsDate := Value;
+    ParseString(PSOChar(path), true, False, self, [foCreatePath, foPutValue], TSuperObject.Create(val.NativeToXS));
+  finally
+    val.Free;
+  end;
+end;
+
+function XmlToDelphiDateTime(const S: String): TDateTime;
+var
+  value: TXSDateTime;
+begin
+  try
+    value := TXSDateTime.Create;
+    value.XSToNative(S);
+    Result := value.AsDateTime;
+  finally
+    value.Free;
+  end;
+end;
+
+function TSuperObject.GetTM(const path: SOString): TDateTime;
+var
+  obj: ISuperObject;
+  value: TXSDateTime;
+begin
+  obj := GetO(path);
+  if obj <> nil then begin
+    Result := XmlToDelphiDateTime(obj.AsString);
+  end else
+    Result := 0;
+end;
+
+procedure TSuperObject.PutTM(const path: SOString; Value: TDateTime);
+var
+  val: TXSDateTime;
+begin
+  try
+    val := TXSDateTime.Create;
+    val.AsDateTime := Value;
+    ParseString(PSOChar(path), true, False, self, [foCreatePath, foPutValue], TSuperObject.Create(val.NativeToXS));
+  finally
+    val.Free;
+  end;
+end;
 
 {$IFDEF FPC}
 function TSuperObject.QueryInterface({$IFDEF FPC_HAS_CONSTREF}constref{$ELSE}const{$ENDIF} iid: tguid; out obj): longint;{$IFNDEF WINDOWS}cdecl{$ELSE}stdcall{$ENDIF};
@@ -4391,6 +4487,20 @@ end;
 
 { TSuperArray }
 
+function TSuperArray.Find(key, value: String): ISuperObject;
+var
+  i: Integer;
+begin
+  Result := NIL;
+  for i := 0 to FLength-1 do begin
+    Result := FArray^[i];
+    if FArray^[i].S[key] = value then begin
+      Result := FArray^[i];
+      Break;
+    end;
+  end;
+end;
+
 function TSuperArray.Add(const Data: ISuperObject): Integer;
 begin
   Result := FLength;
@@ -4634,6 +4744,41 @@ end;
 procedure TSuperArray.PutS(const index: integer; const Value: SOString);
 begin
   PutO(index, TSuperObject.Create(Value));
+end;
+
+procedure TSuperArray.PutS(const index: integer; const Value: SOString);
+begin
+  PutO(index, TSuperObject.Create(Value));
+end;
+
+function TSuperArray.GetDT(const index: integer): TDateTime;
+var
+  obj: ISuperObject;
+begin
+  obj := GetO(index);
+  if obj <> nil then
+    Result := XmlToDelphiDate(obj.AsString) else
+    Result := 0;
+end;
+
+function TSuperArray.GetTM(const index: integer): TDateTime;
+var
+  obj: ISuperObject;
+begin
+  obj := GetO(index);
+  if obj <> nil then
+    Result := XmlToDelphiDateTime(obj.AsString) else
+    Result := 0;
+end;
+
+procedure TSuperArray.PutDT(const index: integer; const Value: TDateTime);
+begin
+  PutS(index, FormatDateTime('yyyy-mm-dd', Value));
+end;
+
+procedure TSuperArray.PutTM(const index: integer; const Value: TDateTime);
+begin
+  PutS(index, FormatDateTime('yyyy-mm-dd hh:nn:ss', Value));
 end;
 
 {$IFDEF SUPER_METHOD}
