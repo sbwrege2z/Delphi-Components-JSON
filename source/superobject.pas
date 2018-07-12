@@ -991,6 +991,8 @@ begin
     SetLength(Result, len);
     if c < 0 then
       Result := '-' + Result;
+    if Result[len] = '.' then
+      SetLength(Result, len-1);
   end;
 end;
 
