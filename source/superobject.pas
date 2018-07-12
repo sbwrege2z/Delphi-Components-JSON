@@ -851,7 +851,7 @@ function SOInvoke(const obj: TValue; const method: string; const params: string;
 
 implementation
 uses
-  sysutils, Windows, superdate
+  sysutils, Windows, superdate, XSBuiltIns
 {$IFDEF FPC}
   ,sockets
 {$ELSE}
@@ -3270,6 +3270,9 @@ end;
 
 procedure TSuperObject.PutS(const path: SOString; const Value: SOString);
 begin
+  ParseString(PSOChar(path), true, False, self, [foCreatePath, foPutValue], TSuperObject.Create(Value));
+end;
+
 function XmlToDelphiDate(const S: String): TDateTime;
 var
   value: TXSDate;
@@ -4712,6 +4715,20 @@ begin
 end;
 
 procedure TSuperArray.PutC(const index: integer; Value: Currency);
+begin
+  PutO(index, TSuperObject.CreateCurrency(Value));
+end;
+
+procedure TSuperArray.PutI(const index: integer; Value: SuperInt);
+begin
+  PutO(index, TSuperObject.Create(Value));
+end;
+
+procedure TSuperArray.PutS(const index: integer; const Value: SOString);
+begin
+  PutO(index, TSuperObject.Create(Value));
+end;
+
 function TSuperArray.GetDT(const index: integer): TDateTime;
 var
   obj: ISuperObject;
