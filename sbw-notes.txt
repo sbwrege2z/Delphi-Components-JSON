@@ -1,0 +1,2 @@
+NOTE: This version does not compile with Delphi 7.
+The supertimezone.pas file uses Generics.Collections which wasn't introducted until Delphi 2009.
