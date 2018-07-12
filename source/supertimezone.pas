@@ -3,8 +3,7 @@ unit supertimezone;
 interface
 
 uses
-  Windows, Registry, SysUtils, Math, Generics.Collections,
-  supertypes;
+  Windows, Registry, SysUtils, Math, Generics.Collections, supertypes;
 
 type
   TSuperTimeZone = class

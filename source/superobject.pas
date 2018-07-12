@@ -76,7 +76,7 @@
  *   + first release
  *)
 
-{$IFDEF FPC}
+{$IFDEF FPC}   
   {$MODE OBJFPC}{$H+}
 {$ENDIF}
 
@@ -89,7 +89,9 @@
 {$ifend}
 
 {$if defined(VER230) or defined(VER240)  or defined(VER250) or
-     defined(VER260) or defined(VER270)  or defined(VER280)}
+     defined(VER260) or defined(VER270)  or defined(VER280) or
+     defined(VER290) or defined(VER300)  or defined(VER310) or
+     defined(VER320) or defined(VER330)  or defined(VER340)}
   {$define VER210ORGREATER}
   {$define VER230ORGREATER}
 {$ifend}
@@ -859,7 +861,7 @@ function SOInvoke(const obj: TValue; const method: string; const params: string;
 
 implementation
 uses
-  sysutils, Windows, superdate, XSBuiltIns,
+  sysutils, Windows, superdate, XSBuiltIns
 {$IFDEF FPC}
   ,sockets
 {$ELSE}
@@ -4746,11 +4748,6 @@ begin
   PutO(index, TSuperObject.Create(Value));
 end;
 
-procedure TSuperArray.PutS(const index: integer; const Value: SOString);
-begin
-  PutO(index, TSuperObject.Create(Value));
-end;
-
 function TSuperArray.GetDT(const index: integer): TDateTime;
 var
   obj: ISuperObject;
@@ -6467,7 +6464,10 @@ function TSuperRttiContext.FromJson(TypeInfo: PTypeInfo; const obj: ISuperObject
   var
     o: ISuperObject;
   begin
-    if CompareMem(@GetTypeData(TypeInfo).Guid, @soguid, SizeOf(TGUID)) then
+    // SBW: This line doesn't compile under Delphi 10.2:
+    //if CompareMem(@GetTypeData(TypeInfo).Guid, @soguid, SizeOf(TGUID)) then
+    // SBW: Replace with this line:
+    if isEqualGUID(GetTypeData(TypeInfo).Guid, soguid) then
     begin
       if obj <> nil then
         TValue.Make(@obj, TypeInfo, Value) else

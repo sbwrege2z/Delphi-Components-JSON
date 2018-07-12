@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2018/07/08 09:00:46.000.763,=C:\Users\Administrator\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2018/07/11 19:50:18.781,=C:\Users\Administrator\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2018/07/11 19:55:21.224,D:\Delphi\Components\JSON\v18.07.11\tests\Unit1.dfm=C:\Users\Administrator\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2018/07/11 19:55:21.224,D:\Delphi\Components\JSON\v18.07.11\tests\Unit1.pas=C:\Users\Administrator\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2018/07/11 19:55:22.622,D:\Delphi\Components\JSON\v18.07.11\tests\Project1.dproj=C:\Users\Administrator\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2018/07/11 20:05:12.333,D:\Delphi\Components\JSON\v18.07.11\tests\d25\Project1.dproj=D:\Delphi\Components\JSON\v18.07.11\tests\Project1.dproj</Transaction>
+    <Transaction>2018/07/11 20:05:23.999,D:\Delphi\Components\JSON\v18.07.11\tests\d25\Unit1.pas=D:\Delphi\Components\JSON\v18.07.11\tests\Unit1.pas</Transaction>
+    <Transaction>2018/07/11 20:05:23.999,D:\Delphi\Components\JSON\v18.07.11\tests\d25\Unit1.dfm=D:\Delphi\Components\JSON\v18.07.11\tests\Unit1.dfm</Transaction>
+    <Transaction>2018/07/11 20:05:32.772,D:\Delphi\Components\JSON\v18.07.11\tests\d25\Project1.dproj=D:\Delphi\Components\JSON\v18.07.11\tests\d25\Project1.dproj</Transaction>
+  </Transactions>
+	<ActiveMobileDevice>
+		<NoProfile iOSSimulator="iPhone5"/>
+	</ActiveMobileDevice>
+</BorlandProject>
