@@ -83,19 +83,28 @@
 {$DEFINE SUPER_METHOD}
 {.$DEFINE DEBUG} // track memory leack
 
+{$if defined(VER210) or defined(VER220)}
+  {$define VER210ORGREATER}
+{$ifend}
+
+{$if defined(VER230) or defined(VER240)  or defined(VER250) or
+     defined(VER260) or defined(VER270)  or defined(VER280) or
+     defined(VER290) or defined(VER300)  or defined(VER310) or
+     defined(VER320) or defined(VER330)  or defined(VER340)}
+  {$define VER210ORGREATER}
+  {$define VER230ORGREATER}
+{$ifend}
 
 {$if defined(FPC) or defined(VER170) or defined(VER180) or defined(VER190)
-  or defined(VER200) or defined(VER210) or defined(VER220) or defined(VER230)
-  or defined(VER240)  or defined(VER250) or defined(VER260)}
+  or defined(VER200) or defined(VER210ORGREATER)}
   {$DEFINE HAVE_INLINE}
 {$ifend}
 
-{$if defined(VER210) or defined(VER220) or defined(VER230) or defined(VER240)
-  or defined(VER250) or defined(VER260)}
+{$if defined(VER210ORGREATER)}
   {$define HAVE_RTTI}
 {$ifend}
 
-{$if defined(VER230) or defined(VER240) or defined(VER250) or defined(VER260)}
+{$if defined(VER230ORGREATER)}
   {$define NEED_FORMATSETTINGS}
 {$ifend}
 
@@ -6445,7 +6454,10 @@ function TSuperRttiContext.FromJson(TypeInfo: PTypeInfo; const obj: ISuperObject
   var
     o: ISuperObject;
   begin
-    if CompareMem(@GetTypeData(TypeInfo).Guid, @soguid, SizeOf(TGUID)) then
+    // SBW: This line doesn't compile under Delphi 10.2:
+    //if CompareMem(@GetTypeData(TypeInfo).Guid, @soguid, SizeOf(TGUID)) then
+    // SBW: Replace with this line:
+    if isEqualGUID(GetTypeData(TypeInfo).Guid, soguid) then
     begin
       if obj <> nil then
         TValue.Make(@obj, TypeInfo, Value) else
